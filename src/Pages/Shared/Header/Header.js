@@ -1,20 +1,32 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../../../contexts/AuthPProvider/AuthProvider";
 
 const Header = () => {
   const [show, setShow] = useState(false);
 
+  const { user, logOut } = useContext(AuthContext);
+
+  const handleLogOut = () => {
+    logOut()
+      .then()
+      .catch((error) => console.error("Logout Error: ", error));
+  };
+
   return (
-    <div className="bg-gray-100 pb-12 overflow-y-hidden">
+    <div className="bg-gray-100 overflow-y-hidden">
       {/* Code block starts */}
       <dh-component>
         <nav className="w-full border-b-2">
           <div className="py-5 md:py-0 container mx-auto px-6 flex items-center justify-between">
             <div aria-label="Home. logo" role="img">
-              <img
-                className="w-auto h-6 lg:h-12 md:h-6 md:w-auto"
-                src="https://cdn-icons-png.flaticon.com/128/1069/1069189.png"
-                alt="logo"
-              />
+              <Link to="/">
+                <img
+                  className="w-auto h-6 lg:h-12 md:h-6 md:w-auto"
+                  src="https://cdn-icons-png.flaticon.com/128/1069/1069189.png"
+                  alt="logo"
+                />
+              </Link>
             </div>
             <div>
               <button
@@ -66,15 +78,15 @@ const Header = () => {
                     <line x1={6} y1={6} x2={18} y2={18} />
                   </svg>
                 </button>
-                <ul className="flex text-3xl md:text-base items-center py-10 md:flex flex-col md:flex-row justify-center fixed md:relative top-0 bottom-0 left-0 right-0 bg-white md:bg-transparent z-20">
+                <ul className="flex text-3xl md:text-base items-center py-8 md:flex flex-col md:flex-row justify-center fixed md:relative top-0 bottom-0 left-0 right-0 bg-white md:bg-transparent z-20">
                   <li className="text-gray-700 hover:text-gray-900 cursor-pointer text-base lg:text-lg pt-10 md:pt-0">
-                    <a href="/">Add Task</a>
+                    <Link to="/addtask">Add Task</Link>
                   </li>
                   <li className="text-gray-700 hover:text-gray-900 cursor-pointer text-base lg:text-lg pt-10 md:pt-0 md:ml-10 lg:ml-20">
-                    <a href="/">My Task</a>
+                    <Link to="/mytasks">My Task</Link>
                   </li>
                   <li className="text-gray-700 hover:text-gray-900 cursor-pointer text-base lg:text-lg pt-10 md:pt-0 md:ml-10 lg:ml-20">
-                    <a href="/">Completed Task</a>
+                    <Link to="/completedtask">Completed Task</Link>
                   </li>
                   {/* <li className="text-gray-700 hover:text-gray-900 cursor-pointer text-base lg:text-lg pt-10 md:pt-0 md:ml-5 lg:ml-10">
                     <a href="/">Features</a>
@@ -85,9 +97,20 @@ const Header = () => {
                 </ul>
               </div>
             </div>
-            <button className="focus:outline-none lg:text-lg lg:font-bold focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 hidden md:block bg-transparent transition duration-150 ease-in-out hover:bg-gray-200 rounded border border-indigo-700 text-indigo-700 px-4 sm:px-8 py-1 sm:py-3 text-sm">
-              Sign In
-            </button>
+            {user?.email ? (
+              <button
+                onClick={handleLogOut}
+                className="focus:outline-none lg:text-lg lg:font-bold focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 hidden md:block bg-transparent transition duration-150 ease-in-out hover:bg-gray-200 rounded border border-indigo-700 text-indigo-700 px-4 sm:px-8 py-1 sm:py-3 text-sm"
+              >
+                Log out
+              </button>
+            ) : (
+              <Link to="/login">
+                <button className="focus:outline-none lg:text-lg lg:font-bold focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 hidden md:block bg-transparent transition duration-150 ease-in-out hover:bg-gray-200 rounded border border-indigo-700 text-indigo-700 px-4 sm:px-8 py-1 sm:py-3 text-sm">
+                  Login
+                </button>
+              </Link>
+            )}
           </div>
         </nav>
       </dh-component>
