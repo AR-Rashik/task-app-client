@@ -3,6 +3,7 @@ import Main from "../../Layout/Main";
 import AddTask from "../../Pages/AddTask/AddTask";
 import Home from "../../Pages/Home/Home/Home";
 import Login from "../../Pages/Login/Login";
+import EditTask from "../../Pages/MyTasks/EditTask";
 import MyTasks from "../../Pages/MyTasks/MyTasks";
 import SignUp from "../../Pages/SignUp/SignUp";
 
@@ -36,6 +37,12 @@ export const router = createBrowserRouter([
       {
         path: "/completedtask",
         element: <CompletedTask></CompletedTask>,
+      },
+      {
+        path: "/tasks/edit/:id",
+        element: <EditTask></EditTask>,
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/tasks/edit/${params.id}`),
       },
     ],
   },

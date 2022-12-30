@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/AuthPProvider/AuthProvider";
 import { FaEdit, FaRegCheckSquare, FaRegTrashAlt } from "react-icons/fa";
+import { toast } from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const MyTasks = () => {
   // const [showDropdown, setShowDropdown] = useState(false);
@@ -22,8 +24,40 @@ const MyTasks = () => {
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
+          if (data.deletedCount === 1) {
+            toast.success("Task deleted successfully.");
+            const remaining = tasks.filter((task) => task._id !== id);
+            setTasks(remaining);
+          }
         });
     }
+  };
+
+  const handleCompletedTask = (task) => {
+    const completedTask = {
+      email: task?.email,
+      name: task?.name,
+      time: task?.time,
+      title: task?.title,
+      image_url: task?.image_url,
+      details: task?.details,
+    };
+
+    fetch("http://localhost:5000/completed", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(completedTask),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.acknowledged) {
+          toast.success("Task completed successfully");
+        }
+      })
+      .catch((error) => console.error("Item post errors: ", error));
   };
 
   return (
@@ -59,14 +93,17 @@ const MyTasks = () => {
               </div>
               <div className=" my-4 rounded-md flex items-center justify-center gap-3">
                 {/* Edit button */}
-                <button className="bg-blue-200 h-8 w-24 mb-4 md:mb-0 rounded-md flex items-center justify-center">
+                <Link
+                  to={`/tasks/edit/${task._id}`}
+                  className="bg-blue-200 h-8 w-24 mb-4 md:mb-0 rounded-md flex items-center justify-center"
+                >
                   <div className="flex items-center">
                     <FaEdit className="text-blue-800"></FaEdit>
                     <span className="text-xs pl-2 text-blue-800 font-semibold">
                       Edit
                     </span>
                   </div>
-                </button>
+                </Link>
 
                 {/* Delete button */}
                 <button
@@ -82,14 +119,18 @@ const MyTasks = () => {
                 </button>
 
                 {/* Completed button */}
-                <button className="bg-green-200 h-8 w-24 mb-4 md:mb-0 rounded-md flex items-center justify-center">
+                <Link
+                  to="/completedtask"
+                  onClick={() => handleCompletedTask(task)}
+                  className="bg-green-200 h-8 w-24 mb-4 md:mb-0 rounded-md flex items-center justify-center"
+                >
                   <div className="flex items-center">
                     <FaRegCheckSquare className="text-green-800 "></FaRegCheckSquare>
                     <span className="text-xs pl-2 text-green-800 font-semibold">
                       Completed
                     </span>
                   </div>
-                </button>
+                </Link>
               </div>
             </div>
           </div>
