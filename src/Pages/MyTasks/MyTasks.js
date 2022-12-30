@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../contexts/AuthPProvider/AuthProvider";
 
 const MyTasks = () => {
   // const [showDropdown, setShowDropdown] = useState(false);
   const [tasks, setTasks] = useState([]);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    fetch("http://localhost:5000/tasks")
+    fetch(`http://localhost:5000/tasks?email=${user?.email}`)
       .then((res) => res.json())
       .then((data) => setTasks(data));
-  }, []);
+  }, [user?.email]);
 
   return (
     <>
@@ -21,7 +23,10 @@ const MyTasks = () => {
           </p>
         </div>
         {tasks.map((task) => (
-          <div className="xl:px-8 lg:px-8 md:px-8 px-4 py-6 bg-white dark:bg-gray-800">
+          <div
+            key={task._id}
+            className="xl:px-8 lg:px-8 md:px-8 px-4 py-6 bg-white dark:bg-gray-800"
+          >
             <div className="p-5 flex justify-between rounded mb-6 bg-gray-100 dark:bg-gray-700">
               <div className="w-3/5">
                 <p className="mb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
@@ -29,7 +34,7 @@ const MyTasks = () => {
                 </p>
                 <ul>
                   <li className="mb-2 text-xs text-gray-600 dark:text-gray-400">
-                    {task.description}
+                    {task.details}
                   </li>
                 </ul>
               </div>
@@ -37,10 +42,36 @@ const MyTasks = () => {
                 <p className="text-xs text-gray-600 dark:text-gray-400">
                   {task.time}
                 </p>
-                <div className="bg-gray-200 h-6 w-20 mb-4 md:mb-0 rounded-md flex items-center justify-center">
-                  <span className="text-xs text-gray-600 dark:text-gray-400 font-normal">
-                    Meeting
-                  </span>
+                <div className=" my-6 md:mb-0 rounded-md flex items-center justify-center gap-3">
+                  {/* Edit button */}
+                  <div className="bg-blue-200 h-8 w-24 mb-4 md:mb-0 rounded-md flex items-center justify-center">
+                    <div className="flex items-center">
+                      <div className="h-1 w-1 rounded-full bg-blue-500 mr-1" />
+                      <span className="text-xs text-blue-500 font-normal">
+                        Edit
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Delete button */}
+                  <div className="bg-red-200 h-8 w-24 mb-4 md:mb-0 rounded-md flex items-center justify-center">
+                    <div className="flex items-center">
+                      <div className="h-1 w-1 rounded-full bg-red-500 mr-1" />
+                      <span className="text-xs text-red-500 font-normal">
+                        Delete
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Completed button */}
+                  <div className="bg-green-200 h-8 w-24 mb-4 md:mb-0 rounded-md flex items-center justify-center">
+                    <div className="flex items-center">
+                      <div className="h-1 w-1 rounded-full bg-green-500 mr-1" />
+                      <span className="text-xs text-green-500 font-normal">
+                        Completed
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
