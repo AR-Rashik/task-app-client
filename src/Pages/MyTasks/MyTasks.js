@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../contexts/AuthPProvider/AuthProvider";
+import { FaEdit, FaRegCheckSquare, FaRegTrashAlt } from "react-icons/fa";
 
 const MyTasks = () => {
   // const [showDropdown, setShowDropdown] = useState(false);
@@ -11,6 +12,19 @@ const MyTasks = () => {
       .then((res) => res.json())
       .then((data) => setTasks(data));
   }, [user?.email]);
+
+  const handleDelete = (id) => {
+    const proceed = window.confirm("Are you sure you want delete this task?");
+    if (proceed) {
+      fetch(`http://localhost:5000/tasks/${id}`, {
+        method: "DELETE",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+        });
+    }
+  };
 
   return (
     <>
@@ -25,54 +39,57 @@ const MyTasks = () => {
         {tasks.map((task) => (
           <div
             key={task._id}
-            className="xl:px-8 lg:px-8 md:px-8 px-4 py-6 bg-white dark:bg-gray-800"
+            className="xl:px-8 lg:px-8 md:px-8 px-4 py-6 bg-white dark:bg-gray-800 md:w-4/6 mx-auto w-full "
           >
-            <div className="p-5 flex justify-between rounded mb-6 bg-gray-100 dark:bg-gray-700">
-              <div className="w-3/5">
-                <p className="mb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
-                  {task.title}
-                </p>
-                <ul>
-                  <li className="mb-2 text-xs text-gray-600 dark:text-gray-400">
-                    {task.details}
-                  </li>
-                </ul>
-              </div>
-              <div className="w-3/12 flex flex-col items-end justify-between">
-                <p className="text-xs text-gray-600 dark:text-gray-400">
-                  {task.time}
-                </p>
-                <div className=" my-6 md:mb-0 rounded-md flex items-center justify-center gap-3">
-                  {/* Edit button */}
-                  <div className="bg-blue-200 h-8 w-24 mb-4 md:mb-0 rounded-md flex items-center justify-center">
-                    <div className="flex items-center">
-                      <div className="h-1 w-1 rounded-full bg-blue-500 mr-1" />
-                      <span className="text-xs text-blue-500 font-normal">
-                        Edit
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Delete button */}
-                  <div className="bg-red-200 h-8 w-24 mb-4 md:mb-0 rounded-md flex items-center justify-center">
-                    <div className="flex items-center">
-                      <div className="h-1 w-1 rounded-full bg-red-500 mr-1" />
-                      <span className="text-xs text-red-500 font-normal">
-                        Delete
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Completed button */}
-                  <div className="bg-green-200 h-8 w-24 mb-4 md:mb-0 rounded-md flex items-center justify-center">
-                    <div className="flex items-center">
-                      <div className="h-1 w-1 rounded-full bg-green-500 mr-1" />
-                      <span className="text-xs text-green-500 font-normal">
-                        Completed
-                      </span>
-                    </div>
-                  </div>
+            <div className="flex flex-col bg-gray-100 dark:bg-gray-700 rounded">
+              <div className="p-5">
+                <div className="flex justify-between">
+                  <p className="mb-2 text-sm font-bold text-gray-800 dark:text-gray-100">
+                    {task.title}
+                  </p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    {task.time}
+                  </p>
                 </div>
+                <div>
+                  <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">
+                    {task.details}
+                  </p>
+                </div>
+              </div>
+              <div className=" my-4 rounded-md flex items-center justify-center gap-3">
+                {/* Edit button */}
+                <button className="bg-blue-200 h-8 w-24 mb-4 md:mb-0 rounded-md flex items-center justify-center">
+                  <div className="flex items-center">
+                    <FaEdit className="text-blue-800"></FaEdit>
+                    <span className="text-xs pl-2 text-blue-800 font-semibold">
+                      Edit
+                    </span>
+                  </div>
+                </button>
+
+                {/* Delete button */}
+                <button
+                  onClick={() => handleDelete(task._id)}
+                  className="bg-red-200 h-8 w-24 mb-4 md:mb-0 rounded-md flex items-center justify-center"
+                >
+                  <div className="flex items-center">
+                    <FaRegTrashAlt className="text-red-800"></FaRegTrashAlt>
+                    <span className="text-xs  pl-2 text-red-800 font-semibold">
+                      Delete
+                    </span>
+                  </div>
+                </button>
+
+                {/* Completed button */}
+                <button className="bg-green-200 h-8 w-24 mb-4 md:mb-0 rounded-md flex items-center justify-center">
+                  <div className="flex items-center">
+                    <FaRegCheckSquare className="text-green-800 "></FaRegCheckSquare>
+                    <span className="text-xs pl-2 text-green-800 font-semibold">
+                      Completed
+                    </span>
+                  </div>
+                </button>
               </div>
             </div>
           </div>
